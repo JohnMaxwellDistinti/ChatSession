@@ -1,6 +1,13 @@
 const app = require('express')();
 const { time } = require('console');
-const uuid = require('uuid');
+//const uuid = require('uuid');
+
+const {
+  uniqueNamesGenerator,
+  adjectives,
+  animals,
+} = require('unique-names-generator');
+
 const http = require('http').createServer(app);
 const socketio = require('socket.io')(http);
 
@@ -13,18 +20,19 @@ app.get('/', (req, res) => {
 });
 
 socketio.on('connection', (socket) => {
-  const newUserID = uuid.v4();
-  users.push(newUserID);
+  const username = uniqueNamesGenerator({
+    dictionaries: [adjectives, animals],
+  });
+  //const newUserID = uuid.v4();
+  users.push(username);
   console.log('~~~~~~~~~~~~~');
-  console.log('user connected - ' + newUserID);
+  console.log('user connected - ' + username);
   console.log('~~~~~~~~~~~~~');
   console.log('Users online right now: ' + users.toString());
   socket.on('disconnect', () => {
-    users = users.filter((id) => {
-      id.toString() !== newUserID.toString();
-    });
-    console.log('User ' + newUserID + ' has left the chat!');
-    console.log('Users online right now: ' + users.toString());
+    users = users.filter((name) => name !== username);
+    console.log('User ' + username + ' has left the chat!');
+    //console.log('Users online right now: ' + users.toString());
   });
 });
 
