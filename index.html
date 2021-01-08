@@ -53,6 +53,15 @@
     <script>
       var socket = io();
 
+      const cleanChat = () => {
+        //console.log(document.getElementsByClassName('messageItem'));
+        [...document.getElementsByClassName('messageItem')].forEach(
+          (message) => {
+            message.remove();
+          }
+        );
+      };
+
       var messages = document.getElementById('messages');
       var form = document.getElementById('form');
       var input = document.getElementById('input');
@@ -65,11 +74,24 @@
         }
       });
 
-      socket.on('chat message', function (msg) {
+      socket.on('chat message', (data) => {
         var item = document.createElement('li');
-        item.textContent = msg;
+        item.className = 'messageItem';
+        item.textContent = data.id + ': ' + data.msg;
         messages.appendChild(item);
         window.scrollTo(0, document.body.scrollHeight);
+      });
+
+      socket.on('load', (history) => {
+        cleanChat();
+        history.forEach((messageObject) => {
+          var item = document.createElement('li');
+          item.className = 'messageItem';
+          item.textContent =
+            messageObject.userID + ': ' + messageObject.message;
+          messages.appendChild(item);
+          window.scrollTo(0, document.body.scrollHeight);
+        });
       });
     </script>
   </body>
