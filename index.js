@@ -20,19 +20,23 @@ app.get('/', (req, res) => {
 });
 
 socketio.on('connection', (socket) => {
+  // Create a random animal username
   const username = uniqueNamesGenerator({
     dictionaries: [adjectives, animals],
   });
+
   //const newUserID = uuid.v4();
   users.push(username);
-  console.log('~~~~~~~~~~~~~');
   console.log('user connected - ' + username);
-  console.log('~~~~~~~~~~~~~');
   console.log('Users online right now: ' + users.toString());
+
   socket.on('disconnect', () => {
     users = users.filter((name) => name !== username);
     console.log('User ' + username + ' has left the chat!');
-    //console.log('Users online right now: ' + users.toString());
+  });
+
+  socket.on('chat message', (msg) => {
+    socketio.emit('chat message', msg);
   });
 });
 
