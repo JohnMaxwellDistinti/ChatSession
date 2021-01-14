@@ -30,14 +30,14 @@ socketio.on('connection', (socket) => {
   socketio.emit('load', history);
 
   users.push(username);
-  //console.log('user connected - ' + username);
+  console.log('user connected - ' + username);
   console.log(
     'Users online right now: ' + users.toString() + '\n' + '~~~~~~~~~~~~~~~'
   );
 
   socket.on('disconnect', () => {
     users = users.filter((name) => name !== username);
-    //console.log('User ' + username + ' has left the chat!');
+    console.log('User ' + username + ' has left the chat!');
     console.log(
       'Users online right now: ' + users.toString() + '\n' + '~~~~~~~~~~~~~~~'
     );
